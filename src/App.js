@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react"; // import firebase dependenc
 import { auth } from "./firebaseConfig"; // credentials provided by firebaseConfig file from above
 import { createUserWithEmailAndPassword, signOut } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
-// import Router from "./Router";
+import Router from "./Router";
 import Add from "./components/Add";
+import BookReadData from "./components/BookReadData";
 
 function App() {
   // const [registeredEmail, setRegisteredEmail] = useState("");
@@ -58,6 +59,8 @@ function App() {
   return (
     <div>
       <Add />
+      <BookReadData />
+      <Router />
       {/* <Router user={user} />
       <h3> Register User </h3>
       <form id="user-form" onSubmit={register}>

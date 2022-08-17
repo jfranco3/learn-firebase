@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebaseConfig";
+import ListDelete from "./ListDelete";
 
 const BookReadData = () => {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     const getCollection = async () => {
@@ -25,10 +26,15 @@ const BookReadData = () => {
   // We're using useEffect here so we can monitor any changes
   //  made to our 'data' state
   useEffect(() => {
-    console.log("effect:", data);
-  }, [data]); // data inside our dependency array
+    console.log("books", data);
+  }, [data]);
 
-  return <div>This is the listing page</div>;
+  return (
+    <div>
+      This book page
+      <ListDelete data={data} setData={setData} />
+    </div>
+  );
 };
 
 export default BookReadData;
