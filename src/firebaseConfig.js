@@ -1,3 +1,5 @@
+import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
+
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
@@ -26,3 +28,5 @@ export const auth = getAuth(app);
 
 // initialize FireStore
 export const db = getFirestore(app);
+export const functions = getFunctions(app);
+connectFunctionsEmulator(functions, "localhost", 5001);

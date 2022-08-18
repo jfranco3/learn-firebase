@@ -5,63 +5,61 @@ import { onAuthStateChanged } from "firebase/auth";
 import Router from "./Router";
 import Add from "./components/Add";
 import BookReadData from "./components/BookReadData";
+import { functions } from "./firebaseConfig";
+import { httpsCallable } from "firebase/functions";
+
+const createRole = async (userCredential, userRole) => {
+  // `httpsCallable()` takes in our functions config and the name
+  //   of the function in our `functions/index.js` we want to call.
+  //    It then returns a function for us to use.
+  const addAdminRole = httpsCallable(functions, "addAdminRole");
+  const email = userCredential?.user.email;
+  const uid = userCredential?.user.uid;
+  const role = userRole;
+  // Our Serverless cloud function we made expects an object
+  //   with the user `id` the users email and the role they will be assigned
+  const result = await addAdminRole({ uid, email, role });
+  console.log("result", result);
+};
 
 function App() {
-  // const [registeredEmail, setRegisteredEmail] = useState("");
-  // const [registeredPassword, setRegisteredPassword] = useState("");
-  // const [user, setUser] = useState({});
+  const [registeredEmail, setRegisteredEmail] = useState("");
+  const [registeredPassword, setRegisteredPassword] = useState("");
 
-  // const register = async (events) => {
-  //   events.preventDefault();
-  //   try {
-  //     // TRY CATCH MUST BE USED ASYNC/AWAIT WHEN WORKING WITH FIREBASE
-  //     const user = await createUserWithEmailAndPassword(
-  //       auth,
-  //       registeredEmail,
-  //       registeredPassword
-  //     );
-  //     console.log(user);
-  //   } catch (error) {
-  //     // Give the user indication they need to try again and why
-  //     // INVALID EMAIL
-  //     // MISSING PASSWORD
-  //     console.log(error.message);
-  //   }
-  //   clearForm();
-  // };
+  const register = async (event) => {
+    event.preventDefault();
+    try {
+      // TRY CATCH MUST BE USED ASYNC/AWAIT WHEN WORKING WITH FIREBASE
+      const user = await createUserWithEmailAndPassword(
+        auth,
+        registeredEmail,
+        registeredPassword
+      );
+      console.log(user);
+      createRole(user, "teacher");
+    } catch (error) {
+      // Give the user indication they need to try again and why
+      // INVALID EMAIL
+      // MISSING PASSWORD
+      console.log(error.message);
+      clearForm();
+    }
+  };
 
-  // const logout = async () => {
-  //   await signOut(auth);
-  // };
+  const logout = async () => {
+    await signOut(auth);
+  };
 
-  // // clear the form inputs
-  // const clearForm = () => {
-  //   setRegisteredEmail("");
-  //   setRegisteredPassword("");
-  // };
+  // clear the form inputs
+  const clearForm = () => {
+    setRegisteredEmail("");
+    setRegisteredPassword("");
+  };
 
-  // console.log("auth.currentUser", auth.currentUser);
-
-  // useEffect(() => {
-  //   const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-  //     console.log("currentUser", currentUser);
-  //     setUser(currentUser);
-  //   });
-
-  //   console.log("auth.currentUser", auth.currentUser);
-
-  //   return unsubscribe;
-  // We only want 1 instance of the user connected to
-  //  the database this cleans up and disconnects the
-  //  observer function when component is unmounted.
-  // }, []);
+  console.log("auth.currentUser", auth.currentUser);
 
   return (
     <div>
-      <Add />
-      <BookReadData />
-      <Router />
-      {/* <Router user={user} />
       <h3> Register User </h3>
       <form id="user-form" onSubmit={register}>
         <input
@@ -81,7 +79,7 @@ function App() {
         />
         <input type="submit" placeholder="User Name" />
         <button onClick={logout}> Sign Out </button>
-      </form> */}
+      </form>
     </div>
   );
 }
